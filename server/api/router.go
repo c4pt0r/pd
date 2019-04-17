@@ -126,11 +126,15 @@ func createRouter(prefix string, svr *server.Server) *mux.Router {
 	adminHandler := newAdminHandler(svr, rd)
 	router.HandleFunc("/api/v1/admin/cache/region/{id}", adminHandler.HandleDropCacheRegion).Methods("DELETE")
 
+	tidbInfoHandler := newTiDBServerInfoHandler(svr, rd)
+	router.HandleFunc("/api/v1/tidb", tidbInfoHandler.Get).Methods("GET")
+
 	logHanler := newlogHandler(svr, rd)
 	router.HandleFunc("/api/v1/admin/log", logHanler.Handle).Methods("POST")
 
 	router.HandleFunc(pingAPI, func(w http.ResponseWriter, r *http.Request) {}).Methods("GET")
 	router.Handle("/health", newHealthHandler(svr, rd)).Methods("GET")
 	router.Handle("/diagnose", newDiagnoseHandler(svr, rd)).Methods("GET")
+
 	return router
 }
