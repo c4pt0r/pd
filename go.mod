@@ -26,6 +26,7 @@ require (
 	github.com/kr/pretty v0.1.0 // indirect
 	github.com/mattn/go-shellwords v1.0.3
 	github.com/montanaflynn/stats v0.0.0-20151014174947-eeaced052adb
+	github.com/ngaut/log v0.0.0-20180314031856-b8e36e7ba5ac
 	github.com/opentracing/opentracing-go v1.0.2
 	github.com/pingcap/check v0.0.0-20190102082844-67f458068fc8
 	github.com/pingcap/errcode v0.0.0-20180921232412-a1a7271709d9

@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/coreos/etcd/clientv3"
-	log "github.com/pingcap/log"
+	"github.com/ngaut/log"
 	"github.com/pingcap/pd/server"
 	"github.com/unrolled/render"
 )
@@ -38,23 +38,31 @@ func newTiDBServerInfoHandler(svr *server.Server, rd *render.Render) *TiDBServer
 func (h *TiDBServerInfoHandler) Get(w http.ResponseWriter, r *http.Request) {
 	kv := h.svr.GetStorage()
 
-	var items []string
+	var items, keys, vals []string
+	var err error
 
 	start := tidbInfoPrefix
 	end := clientv3.GetPrefixRangeEnd(tidbInfoPrefix)
 
+	batchSize := 10
 	for {
-		ret, err := kv.LoadRange(start, end, 10)
-		if len(ret) == 0 {
+		keys, vals, err = kv.LoadRange(start, end, batchSize)
+		if len(vals) > 0 {
+			items = append(items, vals...)
+		}
+		if len(vals) < batchSize {
 			break
 		}
-		items = append(items, ret...)
-		start = ret[len(ret) - 1].
+		start = keys[len(keys)-1]
 	}
-	log.Info(items)
 	if err != nil {
 		h.rd.JSON(w, http.StatusInternalServerError, err.Error())
 		return
 	}
+	// REMOVE ME
+	for _, v := range items {
+		log.Info(v)
+	}
+
 	h.rd.JSON(w, http.StatusOK, nil)
 }
