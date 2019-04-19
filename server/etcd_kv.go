@@ -16,18 +16,12 @@ package server
 import (
 	"path"
 	"strings"
-	"time"
 
 	log "github.com/pingcap/log"
 	"github.com/pingcap/pd/pkg/etcdutil"
 	"github.com/pkg/errors"
 	"go.etcd.io/etcd/clientv3"
 	"go.uber.org/zap"
-)
-
-const (
-	kvRequestTimeout  = time.Second * 10
-	kvSlowRequestTime = time.Second * 1
 )
 
 var (

@@ -127,7 +127,7 @@ func createRouter(prefix string, svr *server.Server) *mux.Router {
 	router.HandleFunc("/api/v1/admin/cache/region/{id}", adminHandler.HandleDropCacheRegion).Methods("DELETE")
 
 	tidbInfoHandler := newTiDBServerInfoHandler(svr, rd)
-	router.HandleFunc("/api/v1/tidb", tidbInfoHandler.Get).Methods("GET")
+	router.HandleFunc("/api/v1/tidb/{start_key}", tidbInfoHandler.Get).Methods("GET")
 
 	logHanler := newlogHandler(svr, rd)
 	router.HandleFunc("/api/v1/admin/log", logHanler.Handle).Methods("POST")

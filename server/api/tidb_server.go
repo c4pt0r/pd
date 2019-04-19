@@ -3,10 +3,11 @@ package api
 import (
 	"net/http"
 
-	"github.com/coreos/etcd/clientv3"
+	"github.com/gorilla/mux"
 	"github.com/ngaut/log"
 	"github.com/pingcap/pd/server"
 	"github.com/unrolled/render"
+	"go.etcd.io/etcd/clientv3"
 )
 
 type TiDBServerInfo struct {
@@ -41,14 +42,18 @@ func (h *TiDBServerInfoHandler) Get(w http.ResponseWriter, r *http.Request) {
 	var items, keys, vals []string
 	var err error
 
-	start := tidbInfoPrefix
+	startKey := mux.Vars(r)["start_key"]
+
+	//start := tidbInfoPrefix
+	start := startKey
 	end := clientv3.GetPrefixRangeEnd(tidbInfoPrefix)
 
 	batchSize := 10
 	for {
 		keys, vals, err = kv.LoadRange(start, end, batchSize)
+		log.Info(keys, vals)
 		if len(vals) > 0 {
-			items = append(items, vals...)
+			items = append(items, keys...)
 		}
 		if len(vals) < batchSize {
 			break
